@@ -4,7 +4,7 @@ App::uses('AppController', 'Controller');
 
 class JournalEntriesController extends AppController {
   
-  public function admin_index() {
+  public function index() {
     
     $data = $this->JournalEntry->find('all', array(
       'contain' => array(
@@ -19,7 +19,7 @@ class JournalEntriesController extends AppController {
     $this->set(compact('data'));
   }
   
-  public function admin_add() {
+  public function add() {
     $this->JournalEntry->create();
     
     if (! $this->request->is(['post', 'put'])) {
@@ -29,10 +29,10 @@ class JournalEntriesController extends AppController {
       ];
     }
     
-    $this->_admin_form();
+    $this->form();
   }
   
-  public function admin_edit($id) {
+  public function edit($id) {
     
     if (! $this->JournalEntry->exists($id)) {
       $this->Session->flash('Invalid entry.');
@@ -52,10 +52,10 @@ class JournalEntriesController extends AppController {
       $this->request->data = $journalEntry;
     }
     
-    $this->_admin_form();
+    $this->form();
   }
   
-  private function _admin_form() {
+  private function form() {
     
     $ledgerAccounts = $this->JournalEntry->JournalEntryItem->GlAccount->find('all');
     
@@ -111,7 +111,7 @@ class JournalEntriesController extends AppController {
     }
     
     $this->set(compact('ledgerAccounts', 'paymentTypes', 'accountNumbers', 'events'));
-    $this->render('_admin_form');
+    $this->render('form');
   }
   
 }

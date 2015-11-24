@@ -45,7 +45,7 @@ class UsersController extends AppController {
     
   }
   
-  public function admin_index() {
+  public function index() {
     
   }
   

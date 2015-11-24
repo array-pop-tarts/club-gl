@@ -4,7 +4,7 @@ App::uses('AppController', 'Controller');
 
 class LedgerEntriesController extends AppController {
   
-  public function admin_index($accountId) {
+  public function index($accountId) {
     
     if (! $this->LedgerEntry->JournalEntryItem->GlAccount->exists($accountId))
       throw new InvalidArgumentException('This is not a valid Ledger Account');
