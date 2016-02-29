@@ -8,12 +8,15 @@
 /build
 /dist
 /tags
+/uml
 *.mo
+.sql
 
 # IDE and editor specific files #
 #################################
 /nbproject
 .idea
+.komodoproject
 
 # OS generated files #
 ######################
