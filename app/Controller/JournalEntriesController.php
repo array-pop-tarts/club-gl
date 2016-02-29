@@ -80,34 +80,32 @@ class JournalEntriesController extends AppController {
       
       $this->request->data['JournalEntry']['user_id'] = $this->Auth->user('id');
       
-      pr($this->request->data);
+      $ledgerEntries = array();
+      foreach ($this->request->data['JournalEntryItem'] as $key => $item) {
+        
+        $recordTypes = $this->JournalEntry->recordTypes();
+        $amounts = array();
+        foreach ($recordTypes as $type => $name) {
+          $amounts[$type] = $item[strtolower($type) . '_amount'];
+        }
+        
+        foreach ($amounts as $type => $amount) {
+          if (!empty($amount)) {
+            $this->request->data['JournalEntryItem'][$key]['amount'] = $this->request->data['JournalEntryItem'][$key]['LedgerEntry'][$key]['amount'] = $amount;
+            $this->request->data['JournalEntryItem'][$key]['type'] = $this->request->data['JournalEntryItem'][$key]['LedgerEntry'][$key]['type'] = $type;
+          }
+        }
+        $this->request->data['JournalEntryItem'][$key]['LedgerEntry'][$key]['date'] = $this->request->data['JournalEntry']['date'];
+      }
       
-      //$ledgerEntries = array();
-      //foreach ($this->request->data['JournalEntryItem'] as $key => $item) {
-      //  
-      //  $recordTypes = $this->JournalEntry->recordTypes();
-      //  $amounts = array();
-      //  foreach ($recordTypes as $type => $name) {
-      //    $amounts[$type] = $item[strtolower($type) . '_amount'];
-      //  }
-      //  
-      //  foreach ($amounts as $type => $amount) {
-      //    if (!empty($amount)) {
-      //      $this->request->data['JournalEntryItem'][$key]['amount'] = $this->request->data['JournalEntryItem'][$key]['LedgerEntry'][$key]['amount'] = $amount;
-      //      $this->request->data['JournalEntryItem'][$key]['type'] = $this->request->data['JournalEntryItem'][$key]['LedgerEntry'][$key]['type'] = $type;
-      //    }
-      //  }
-      //  $this->request->data['JournalEntryItem'][$key]['LedgerEntry'][$key]['date'] = $this->request->data['JournalEntry']['date'];
-      //}
-      //
-      //if ($this->JournalEntry->saveAll($this->request->data, array('deep' => true))) {
-      //  
-      //  $this->Session->setFlash('Entry saved', 'success');
-      //  $this->redirect(array('action' => 'index'));
-      //}
-      //else {
-      //  $this->Session->setFlash('Entry could not be saved', 'danger');
-      //}
+      if ($this->JournalEntry->saveAll($this->request->data, array('deep' => true))) {
+        
+        $this->Session->setFlash('Entry saved', 'success');
+        $this->redirect(array('action' => 'index'));
+      }
+      else {
+        $this->Session->setFlash('Entry could not be saved', 'danger');
+      }
     }
     
     $this->set(compact('ledgerAccounts', 'paymentTypes', 'accountNumbers', 'events'));
